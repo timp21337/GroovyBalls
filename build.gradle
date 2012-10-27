@@ -1,0 +1,45 @@
+apply plugin: 'groovy'
+apply plugin: 'application'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    groovy 'org.codehaus.groovy:groovy-all:2.1.0-SNAPSHOT'
+    compile 'org.codehaus.groovyfx:groovyfx:0.3.1'
+    // JavaFX is not on the classpath by default. FFS. FAIL.
+    compile files('/home/users/russel/lib.Linux.x86_64/JDK/jre/lib/jfxrt.jar')
+    testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
+}
+
+mainClassName = 'uk.org.winder.groovyballs.Application'
+
+defaultTasks 'test'
+
+idea {
+    module {
+        excludeDirs += file('gradle/') // Gradle directory including the wrapper subdirectory.
+        excludeDirs += file('.settings/') // Eclipse settings directory.
+        excludeDirs += file('bin') // Eclipse compilation directory.
+        excludeDirs += file('out') // IDEA compilation directory.
+        excludeDirs += file('build') // Gradle compilation directory.
+    }
+    project {
+        ext.javaVersion = '1.7'
+        ipr {
+            withXml { provider ->
+                final node =provider.asNode()
+                node.component.find { it.'@name' == 'VcsDirectoryMappings' }.mapping[0].'@vcs' = 'Git'
+                final gradleSettings = node.appendNode('component' , [name: 'GradleSettings'])
+                gradleSettings.appendNode('option', [name: 'linkedProjectPath', value: '$PROJECT_DIR$/build.gradle'])
+            }
+            whenMerged { project ->
+                project.jdk.languageLevel = 'JDK_1_7'
+            }
+        }
+    }
+}
