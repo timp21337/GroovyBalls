@@ -24,9 +24,12 @@ import static groovyx.javafx.GroovyFX.start
 arenaHeight = 300.0
 arenaWidth = 300.0
 
+radius = 10
+location = radius / 2 + 0.1
+
 balls = [
-	green: [glyph: null, data: new BallModel(x: 5.0, y: 5.0, r:10, velocity: 5, angle: 0.2)],
-	red: [glyph: null, data: new BallModel(x: 5.0, y: arenaHeight - 5.0, r: 10, velocity: 5, angle: 1.7)],
+	green: [glyph: null, data: new BallModel(x: location, y: location, r:10, dx: 1.0, dy: 0.8)],
+	red: [glyph: null, data: new BallModel(x: location, y: arenaHeight - location, r: 10, dx: 0.8, dy: -1.0)],
 	]
 
 start {
@@ -34,25 +37,32 @@ start {
         scene(width: arenaWidth, height: arenaHeight, fill: BLACK) {
             balls.green.glyph = circle(centerX: bind(balls.green.data.x()), centerY: bind(balls.green.data.y()), radius: bind(balls.green.data.r())) { fill GREEN }
             balls.red.glyph = circle(centerX: bind(balls.red.data.x()), centerY: bind(balls.red.data.y()), radius: bind(balls.red.data.r())) { fill RED }
-			collisionCheck = { ->
-				if (balls.green.data.intersects(balls.red.data)) {
-					balls.green.data.randomAngle()
-					balls.red.data.randomAngle()
-				}
-				else {
-					balls.green.glyph.fill = GREEN
-					balls.red.glyph.fill = RED
-				}
-			}
+                collisionCheck = { ->
+
+                    if (balls.green.data.x + balls.green.data.r > arenaWidth) balls.green.data.dx = -balls.green.data.dx
+                    if (balls.green.data.x - balls.green.data.r < 0) balls.green.data.dx = -balls.green.data.dx
+                    if (balls.red.data.x + balls.red.data.r > arenaWidth) balls.red.data.dx = -balls.red.data.dx
+                    if (balls.red.data.x - balls.red.data.r < 0) balls.red.data.dx = -balls.red.data.dx
+
+                    if (balls.green.data.y + balls.green.data.r > arenaHeight) balls.green.data.dy = -balls.green.data.dy
+                    if (balls.green.data.y - balls.green.data.r < 0) balls.green.data.dy = -balls.green.data.dy
+                    if (balls.red.data.y + balls.red.data.r > arenaHeight) balls.red.data.dy = -balls.red.data.dy
+                    if (balls.red.data.y - balls.red.data.r < 0) balls.red.data.dy = -balls.red.data.dy
+
+                    if (balls.green.data.intersects(balls.red.data)) {
+                        balls.green.data.randomAngle()
+                        balls.red.data.randomAngle()
+                    }
+                }
         }
     }
 	([handle: {collisionCheck()}] as AnimationTimer).start()
     timeline(cycleCount: INDEFINITE, autoReverse: false) {
         at(20.ms, onFinished: {
-            balls.green.data.x += balls.green.data.velocity * Math.sin(balls.green.data.angle)
-            balls.green.data.y += balls.green.data.velocity * Math.cos(balls.green.data.angle)
-            balls.red.data.x += balls.red.data.velocity * Math.sin(balls.red.data.angle)
-            balls.red.data.y += balls.red.data.velocity * Math.cos(balls.red.data.angle)
+            balls.green.data.x += balls.green.data.dx
+            balls.green.data.y += balls.green.data.dy
+            balls.red.data.x += balls.red.data.dx
+            balls.red.data.y += balls.red.data.dy
         })
     }.play()
 }

@@ -23,14 +23,14 @@ import groovyx.javafx.beans.FXBindable
 	Double x
 	Double y
 	Double r
-	Double velocity
-	Double angle
+	Double dx
+	Double dy
 	boolean intersects(final BallModel other) {
 		def cx = x - other.x
 		def cy = y - other.y
 		cx * cx + cy * cy < r * r
 	}
 	void randomAngle() {
-		
+
 	}
 }
