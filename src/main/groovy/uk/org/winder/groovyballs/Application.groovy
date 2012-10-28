@@ -17,25 +17,37 @@
 
 package uk.org.winder.groovyballs
 
+import groovyx.javafx.beans.FXBindable
+
 import static groovyx.javafx.GroovyFX.start
 
 
 arenaHeight = 300.0
 arenaWidth = 300.0
 
-x = 5.0
-y = 5.0
+@FXBindable final class BallCoordinate {
+    Double x
+    Double y
+}
+
+balls = [
+	green: new BallCoordinate(x: 5.0, y: 5.0),
+	red: new BallCoordinate(x: 5.0, y: arenaWidth - 5.0),
+	]
 
 start {
     stage(title: 'GroovyBalls', x: 100, y:100, visible: true) {
         scene(width: arenaWidth, height: arenaHeight, fill: BLACK) {
-            r = circle(centerX: bind(this, 'x'), centerY: bind(this, 'y'), radius: 10) { fill GREEN }
+            circle(centerX: bind(balls.green, 'x'), centerY: bind(balls.green, 'y'), radius: 10) { fill GREEN }
+            circle(centerX: bind(balls.red, 'x'), centerY: bind(balls.red, 'y'), radius: 10) { fill RED }
         }
     }
-    timeline(cycleCount: INDEFINITE) {
-        at(1.s) {
-            change(this, 'x') to arenaWidth / 4
-            change(this, 'y') to arenaHeight / 4
+    timeline(cycleCount: INDEFINITE, autoReverse: true) {
+        at(2.s) {
+            change(balls.green, 'x') to arenaWidth
+            change(balls.green, 'y') to arenaHeight
+            change(balls.red, 'x') to arenaWidth
+            change(balls.red, 'y') to 0
         }
     }.play()
 }
