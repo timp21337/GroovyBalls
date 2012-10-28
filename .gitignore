@@ -1,0 +1,10 @@
+.classpath
+.gradle/
+.project
+.settings/
+GroovyBalls.iml
+GroovyBalls.ipr
+GroovyBalls.iws
+bin/
+build/
+out/
