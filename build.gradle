@@ -9,10 +9,10 @@ repositories {
 }
 
 dependencies {
-    groovy 'org.codehaus.groovy:groovy-all:2.1.0-SNAPSHOT'
+    groovy 'org.codehaus.groovy:groovy-all:2.0.4'
     compile 'org.codehaus.groovyfx:groovyfx:0.3.1'
     // JavaFX is not on the classpath by default. FFS. FAIL.
-    compile files('/home/users/russel/lib.Linux.x86_64/JDK/jre/lib/jfxrt.jar')
+    compile files("${System.properties['java.home']}/lib/jfxrt.jar")
     testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
 }
 
