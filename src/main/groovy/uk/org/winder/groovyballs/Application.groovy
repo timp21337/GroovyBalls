@@ -25,8 +25,8 @@ arenaHeight = 300.0
 arenaWidth = 300.0
 
 balls = [
-	green: [glyph: null, data: new BallModel(x: 5.0, y: 5.0, r:10)],
-	red: [glyph: null, data: new BallModel(x: 5.0, y: arenaWidth - 5.0, r: 10)],
+	green: [glyph: null, data: new BallModel(x: 5.0, y: 5.0, r:10, velocity: 5, angle: 0.2)],
+	red: [glyph: null, data: new BallModel(x: 5.0, y: arenaHeight - 5.0, r: 10, velocity: 5, angle: 1.7)],
 	]
 
 start {
@@ -36,8 +36,8 @@ start {
             balls.red.glyph = circle(centerX: bind(balls.red.data.x()), centerY: bind(balls.red.data.y()), radius: bind(balls.red.data.r())) { fill RED }
 			collisionCheck = { ->
 				if (balls.green.data.intersects(balls.red.data)) {
-					balls.green.glyph.fill = WHITE
-					balls.red.glyph.fill = WHITE
+					balls.green.data.randomAngle()
+					balls.red.data.randomAngle()
 				}
 				else {
 					balls.green.glyph.fill = GREEN
@@ -47,12 +47,12 @@ start {
         }
     }
 	([handle: {collisionCheck()}] as AnimationTimer).start()
-    timeline(cycleCount: INDEFINITE, autoReverse: true) {
-        at(2.s) {
-            change(balls.green.data.x()) to arenaWidth
-            change(balls.green.data.y()) to arenaHeight
-            change(balls.red.data.x()) to arenaWidth
-            change(balls.red.data.y()) to 0
-        }
+    timeline(cycleCount: INDEFINITE, autoReverse: false) {
+        at(20.ms, onFinished: {
+            balls.green.data.x += balls.green.data.velocity * Math.sin(balls.green.data.angle)
+            balls.green.data.y += balls.green.data.velocity * Math.cos(balls.green.data.angle)
+            balls.red.data.x += balls.red.data.velocity * Math.sin(balls.red.data.angle)
+            balls.red.data.y += balls.red.data.velocity * Math.cos(balls.red.data.angle)
+        })
     }.play()
 }
