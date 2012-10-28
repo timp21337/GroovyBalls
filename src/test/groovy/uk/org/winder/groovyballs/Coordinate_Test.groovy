@@ -18,7 +18,6 @@
 package uk.org.winder.groovyballs
 
 import spock.lang.Specification
-import uk.org.winder.groovyballs.Coordinate
 
 class Coordinate_Test extends Specification {
     def "zero parameter creation fails"() {
@@ -62,4 +61,19 @@ class Coordinate_Test extends Specification {
             thrown(GroovyRuntimeException)
     }
 
+	def "hash function on same values gives some int"() {
+		when:
+			def a = new Coordinate(10, 20)
+			def b = new Coordinate(10, 20)
+		then:
+			a.hashCode() == b.hashCode()
+	}
+	
+	def "hash function on different values gives different ints"() {
+		when:
+			def a = new Coordinate(10, 20)
+			def b = new Coordinate (10, 40)
+		then:
+			a.hashCode() != b.hashCode()
+	}
 }

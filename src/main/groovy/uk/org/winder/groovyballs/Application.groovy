@@ -17,37 +17,42 @@
 
 package uk.org.winder.groovyballs
 
-import groovyx.javafx.beans.FXBindable
+import javafx.animation.AnimationTimer
 
 import static groovyx.javafx.GroovyFX.start
-
 
 arenaHeight = 300.0
 arenaWidth = 300.0
 
-@FXBindable final class BallCoordinate {
-    Double x
-    Double y
-}
-
 balls = [
-	green: new BallCoordinate(x: 5.0, y: 5.0),
-	red: new BallCoordinate(x: 5.0, y: arenaWidth - 5.0),
+	green: [glyph: null, data: new BallModel(x: 5.0, y: 5.0, r:10)],
+	red: [glyph: null, data: new BallModel(x: 5.0, y: arenaWidth - 5.0, r: 10)],
 	]
 
 start {
     stage(title: 'GroovyBalls', x: 100, y:100, visible: true) {
         scene(width: arenaWidth, height: arenaHeight, fill: BLACK) {
-            circle(centerX: bind(balls.green, 'x'), centerY: bind(balls.green, 'y'), radius: 10) { fill GREEN }
-            circle(centerX: bind(balls.red, 'x'), centerY: bind(balls.red, 'y'), radius: 10) { fill RED }
+            balls.green.glyph = circle(centerX: bind(balls.green.data.x()), centerY: bind(balls.green.data.y()), radius: bind(balls.green.data.r())) { fill GREEN }
+            balls.red.glyph = circle(centerX: bind(balls.red.data.x()), centerY: bind(balls.red.data.y()), radius: bind(balls.red.data.r())) { fill RED }
+			collisionCheck = { ->
+				if (balls.green.data.intersects(balls.red.data)) {
+					balls.green.glyph.fill = WHITE
+					balls.red.glyph.fill = WHITE
+				}
+				else {
+					balls.green.glyph.fill = GREEN
+					balls.red.glyph.fill = RED
+				}
+			}
         }
     }
+	([handle: {collisionCheck()}] as AnimationTimer).start()
     timeline(cycleCount: INDEFINITE, autoReverse: true) {
         at(2.s) {
-            change(balls.green, 'x') to arenaWidth
-            change(balls.green, 'y') to arenaHeight
-            change(balls.red, 'x') to arenaWidth
-            change(balls.red, 'y') to 0
+            change(balls.green.data.x()) to arenaWidth
+            change(balls.green.data.y()) to arenaHeight
+            change(balls.red.data.x()) to arenaWidth
+            change(balls.red.data.y()) to 0
         }
     }.play()
 }

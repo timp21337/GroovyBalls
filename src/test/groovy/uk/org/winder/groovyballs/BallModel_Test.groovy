@@ -19,26 +19,20 @@ package uk.org.winder.groovyballs
 
 import spock.lang.Specification
 
-class Quadtree_Test extends Specification {
-    // TODO: FIXME
-    def "zero parameter creation should fail but doesn't, this is an error"() {
-        when: def quadtree = new Quadtree()
-        then: thrown(GroovyRuntimeException)
-    }
-
-    def "one parameter creation fails"() {
-        when: def quadtree = new Quadtree(null)
-        then: thrown(GroovyRuntimeException)
-    }
-
-    def "two parameter creation succeeds"() {
-        when: def quadtree = new Quadtree(null, null)
-        then: quadtree != null
-    }
-
-    def "three parameter creation fails"() {
-        when: def quadtree = new Quadtree(null, null, null)
-        then: thrown(GroovyRuntimeException)
-    }
-
+class BallModel_Test extends Specification {
+	def 'two balls not close do not intersect'() {
+		when:
+			def a = new BallModel(x: 10, y: 10, r: 10)
+			def b = new BallModel(x: 110, y: 110, r: 10)
+		then:
+			!a.intersects(b)
+	}
+	
+	def 'two balls close do intersect'() {
+		when:
+			def a = new BallModel(x: 10, y: 10, r: 10)
+			def b = new BallModel(x: 15, y: 15, r: 10)
+		then:
+			a.intersects(b)
+	}
 }

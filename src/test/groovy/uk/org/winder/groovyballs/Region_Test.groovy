@@ -18,8 +18,6 @@
 package uk.org.winder.groovyballs
 
 import spock.lang.Specification
-import uk.org.winder.groovyballs.Coordinate
-import uk.org.winder.groovyballs.Region
 
 class Region_Test extends Specification {
     def "zero parameter creation fails"() {
@@ -65,18 +63,39 @@ class Region_Test extends Specification {
         then:
             thrown(GroovyRuntimeException)
     }
-/*
-    def "regions can determine if a coordinate is in the covered area"() {
+
+	def "regions can determine if a coordinate is in the covered area"() {
+		setup:
+			def region = new Region(new Coordinate(10, 20), new Coordinate(30, 40))
+		when:
+			def coordinate = new Coordinate(20, 30)
+		then:
+			region.isCoordinateIn(coordinate)
+	}
+	
+    def "regions can determine if a coordinate is outside the covered area"() {
         setup:
             def region = new Region(new Coordinate(10, 20), new Coordinate(30, 40))
         when:
-            def coordinate = new Coordinate(20, 20)
-        then:
-            region.isCoordinateIn(coordinate)
-        when:
-            coordinate = new Coordinate(100,100)
+            def coordinate = new Coordinate(100,100)
         then:
             !region.isCoordinateIn(coordinate)
     }
-    */
+	
+	def "hash function on same values gives some int"() {
+		when:
+			def a = new Region(new Coordinate(10, 20), new Coordinate (30, 40))
+			def b = new Region(new Coordinate(10, 20), new Coordinate (30, 40))
+		then:
+			a.hashCode() == b.hashCode()
+	}
+	
+	def "hash function on different values gives different ints"() {
+		when:
+			def a = new Region(new Coordinate(10, 20), new Coordinate (30, 40))
+			def b = new Region(new Coordinate(10, 20), new Coordinate (10, 40))
+		then:
+			a.hashCode() != b.hashCode()
+	}
+
 }
