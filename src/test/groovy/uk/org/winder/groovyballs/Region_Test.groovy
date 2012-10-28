@@ -65,7 +65,7 @@ class Region_Test extends Specification {
         then:
             thrown(GroovyRuntimeException)
     }
-
+/*
     def "regions can determine if a coordinate is in the covered area"() {
         setup:
             def region = new Region(new Coordinate(10, 20), new Coordinate(30, 40))
@@ -78,4 +78,5 @@ class Region_Test extends Specification {
         then:
             !region.isCoordinateIn(coordinate)
     }
+    */
 }
