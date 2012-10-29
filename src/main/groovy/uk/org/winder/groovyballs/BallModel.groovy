@@ -26,9 +26,9 @@ import groovyx.javafx.beans.FXBindable
 	Double dx
 	Double dy
 	boolean intersects(final BallModel other) {
-            def xSep = x - other.x
-            def ySep = y - other.y
-            def sep = r + other.r
-            xSep * xSep + ySep * ySep < sep * sep
+        def xSep = x - other.x
+        def ySep = y - other.y
+        def sep = r + other.r
+        xSep * xSep + ySep * ySep < sep * sep
 	}
 }

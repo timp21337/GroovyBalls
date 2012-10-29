@@ -72,7 +72,7 @@ class Region_Test extends Specification {
 		then:
 			region.isCoordinateIn(coordinate)
 	}
-	
+
     def "regions can determine if a coordinate is outside the covered area"() {
         setup:
             def region = new Region(new Coordinate(10, 20), new Coordinate(30, 40))
@@ -81,7 +81,7 @@ class Region_Test extends Specification {
         then:
             !region.isCoordinateIn(coordinate)
     }
-	
+
 	def "hash function on same values gives some int"() {
 		when:
 			def a = new Region(new Coordinate(10, 20), new Coordinate (30, 40))
@@ -89,7 +89,7 @@ class Region_Test extends Specification {
 		then:
 			a.hashCode() == b.hashCode()
 	}
-	
+
 	def "hash function on different values gives different ints"() {
 		when:
 			def a = new Region(new Coordinate(10, 20), new Coordinate (30, 40))
@@ -97,5 +97,4 @@ class Region_Test extends Specification {
 		then:
 			a.hashCode() != b.hashCode()
 	}
-
 }

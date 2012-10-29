@@ -26,26 +26,27 @@ final class Quadtree {
             region = r
         }
     }
+
     private final class LeafNode extends Node {
         private ArrayList items = new ArrayList()
-        LeafNode(final Integer l, final Region r) {
-            super(l, r)
-        }
+        LeafNode(final Integer l, final Region r) { super(l, r) }
     }
+
     private final class TreeNode extends Node{
         private final Node[] children = new Node[4]
-        TreeNode(final Integer l, final Region r) {
-            super(l, r)
-        }
+        TreeNode(final Integer l, final Region r) { super(l, r) }
     }
 
     private Node root
     private final Integer perQuadCount
+
     Quadtree(final Region r, final Integer c) {
         root = new LeafNode(0, r)
         perQuadCount = c
     }
+
     void clean() { root = null }
+
     boolean add(final Coordinate c) {
         if (root instanceof LeafNode) {
             root.items.add(c)

@@ -22,7 +22,7 @@ import uk.org.winder.groovyballs.Coordinate
 final class Region {
     final Coordinate tl
     final Coordinate br
-	
+
     Region(final Coordinate a, final Coordinate b) {
         def tlx, tly, brx, bry
         if (a.x < b.x) {
@@ -44,18 +44,18 @@ final class Region {
         this.tl = new Coordinate(tlx, tly)
         this.br = new Coordinate(brx, bry)
     }
-	
+
     @Override boolean equals(final Object other) {
-        if (this.is(other)) return true
-        if (other == null || !(other instanceof Region)) return false
+        if (this.is(other)) { return true }
+        if (other == null || !(other instanceof Region)) { return false }
         def o = (Region)other
         this.tl == o.tl && this.br == o.br
     }
-	
+
     @Override int hashCode() {
-		(tl.hashCode() * 17) ^ br.hashCode()
-	}
-	
+        (tl.hashCode() * 17) ^ br.hashCode()
+    }
+
     Boolean isCoordinateIn(final Coordinate c) {
         tl.x < c.x && c.x < br.x && br.y < c.y && c.y < tl.y
     }

@@ -20,7 +20,6 @@ package uk.org.winder.groovyballs
 import spock.lang.Specification
 
 class Quadtree_Test extends Specification {
-    // TODO: FIXME
     def "zero parameter creation should fail but doesn't, this is an error"() {
         when: def quadtree = new Quadtree()
         then: thrown(GroovyRuntimeException)
@@ -40,5 +39,4 @@ class Quadtree_Test extends Specification {
         when: def quadtree = new Quadtree(null, null, null)
         then: thrown(GroovyRuntimeException)
     }
-
 }

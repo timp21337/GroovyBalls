@@ -20,20 +20,20 @@ package uk.org.winder.groovyballs
 final class Coordinate {
     final Integer x
     final Integer y
-	
+
     Coordinate(final Integer x, final Integer y) {
         this.x = x
         this.y = y
     }
-	
+
     @Override boolean equals(final Object other) {
-        if (this.is(other)) return true
-        if (other == null || !(other instanceof Coordinate)) return false
+        if (this.is(other)) { return true }
+        if (other == null || !(other instanceof Coordinate)) { return false }
         def o = (Coordinate)other
         this.x == o.x && this.y == o.y
     }
-    
+
 	@Override int hashCode() {
-		(x * 33) ^ y
-	}
+        (x * 33) ^ y
+    }
 }
