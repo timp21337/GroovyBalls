@@ -24,31 +24,49 @@ import static groovyx.javafx.GroovyFX.start
 arenaHeight = 300.0
 arenaWidth = 400.0
 
-radius = 10.0
-offset = radius / 2.0 + 10.0
+radius = 15.0
+offset = radius / 2.0 + radius
 
-balls = [
-	green: [glyph: null, data: new BallModel(x: offset, y: offset, r: radius, dx: 1.0, dy: 0.8)],
-	red: [glyph: null, data: new BallModel(x: offset, y: arenaHeight - offset, r: radius, dx: 0.8, dy: -1.0)],
-	]
+ballsInitializationData = [
+    green: [x: offset, y: offset, r: radius, dx: 1.0, dy: 0.8],
+    red: [x: offset, y: arenaHeight - offset, r: radius, dx: 0.8, dy: -1.0],
+    yellow: [x: offset + 0.5 * arenaWidth, y: 0.5 * arenaHeight, r: 2 * radius, dx: 0, dy: -0.5],
+]
+
+elasticCollision = {a, b ->
+    // TODO: This is not correct it's just here to see what happens.
+    a.dx = -a.dx
+    a.dy = -a.dy
+    b.dx = -b.dx
+    b.dy = -b.dy
+}
+
+collisionCheck = { ->
+    balls.each { key, value ->
+        def x = value.data.x + 0.5 * value.data.dx
+        def y = value.data.y + 0.5 * value.data.dy
+        def r = value.data.r
+        if (x + r >= arenaWidth || x - r <= 0) { value.data.dx = -value.data.dx }
+        if (y + r >= arenaHeight || y - r <= 0) { value.data.dy = -value.data.dy }
+    }
+    if (balls.green.data.intersects(balls.red.data)) {
+        elasticCollision(balls.green.data, balls.red.data)
+    }
+    balls.each { key, value ->
+        value.data.x += value.data.dx
+        value.data.y += value.data.dy
+    }
+}
 
 start {
     stage(title: 'GroovyBalls', x: 100, y:100, visible: true) {
         scene(width: arenaWidth, height: arenaHeight, fill: BLACK) {
-            balls.green.glyph = circle(centerX: bind(balls.green.data.x()), centerY: bind(balls.green.data.y()), radius: bind(balls.green.data.r())) { fill GREEN }
-            balls.red.glyph = circle(centerX: bind(balls.red.data.x()), centerY: bind(balls.red.data.y()), radius: bind(balls.red.data.r())) { fill RED }
-                collisionCheck = { ->
-                    balls.each { key, value ->
-                        if (value.data.x + value.data.r >= arenaWidth || value.data.x - value.data.r <= 0) { value.data.dx = -value.data.dx }
-                        value.data.x += value.data.dx
-                        if (value.data.y + value.data.r >= arenaHeight || value.data.y - value.data.r <= 0) { value.data.dy = -value.data.dy }
-                        value.data.y += value.data.dy
-                    }
-                    if (balls.green.data.intersects(balls.red.data)) {
-                        balls.green.data.randomAngle()
-                        balls.red.data.randomAngle()
-                    }
-                }
+            balls = [:]
+            ballsInitializationData.each {key, value -> balls[key] = [glyph: null, data: new BallModel(value)]}
+            ballsInitializationData.each {key, value ->
+                def datum = balls[key].data
+                balls[key].glyph = circle(centerX: bind(datum.x()), centerY: bind(datum.y()), radius: bind(datum.r())) { fill key }
+            }
         }
     }
     ([handle: {collisionCheck()}] as AnimationTimer).start()
